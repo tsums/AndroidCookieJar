@@ -1,3 +1,5 @@
+package com.tsums.androidcookiejar;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -41,7 +43,7 @@ import biz.source_code.base64Coder.Base64Coder;
 
 public class PersistentCookieStore implements CookieStore {
 
-    private static final String COOKIE_PREFS = "CUSTOMCookiePrefsFile";
+    private String COOKIE_PREFS = "CookiePrefsFile";
     private static final String COOKIE_JAR = "CUSTOM CookieJar";
     private static final String URI_LIST = "CUSTOM Uri_List";
     private static final String STRING_LIST = "CUSTOM STRING_LIST";
@@ -62,20 +64,28 @@ public class PersistentCookieStore implements CookieStore {
     // use ReentrantLock instead of syncronized for scalability
     private ReentrantLock lock = null;
 
-
     private PersistentCookieStore(Context ctxContext) {
 
         spePreferences = ctxContext.getSharedPreferences(COOKIE_PREFS, 0);
 
-        cookieJar = new ArrayList<HttpCookie>();
-        domainIndex = new HashMap<String, List<HttpCookie>>();
-        uriIndex = new HashMap<URI, List<HttpCookie>>();
+        cookieJar = new ArrayList<>();
+        domainIndex = new HashMap<>();
+        uriIndex = new HashMap<>();
         lock = new ReentrantLock(false);
 
         loadCookies();
     }
 
-    // Singleton
+    private PersistentCookieStore(Context ctxContenxt, String prefix) {
+        this(ctxContenxt);
+        this.COOKIE_PREFS = prefix + "CUSTOMCookiePrefsFile";
+    }
+
+    /**
+     * Create a standard PersistentCookieStore.
+     * @param ctx Context is needed for storage.
+     * @return new instance.
+     */
     public static PersistentCookieStore getInstance(Context ctx) {
         if (instance == null) {
             instance = new PersistentCookieStore(ctx);
@@ -83,6 +93,18 @@ public class PersistentCookieStore implements CookieStore {
         return instance;
     }
 
+    /**
+     * Create a custom Cookie Store with a specified prefix for SharedPreferences.
+     * @param ctx Context is needed for storage.
+     * @param prefix Prefix for keys inside SharedPreferences.
+     * @return new instance.
+     */
+    public static PersistentCookieStore getInstance(Context ctx, String prefix) {
+        if (instance == null) {
+            instance = new PersistentCookieStore(ctx);
+        }
+        return instance;
+    }
     /**
      * @param cookies the list of cookies to be converted
      * @return a set of serialized string representations of the cookies.
@@ -104,13 +126,11 @@ public class PersistentCookieStore implements CookieStore {
      * @return A list of deserialized HttpCookie objects.
      */
     private static List<HttpCookie> stringSetToCookieList(Set<String> strings) {
-        List<HttpCookie> cookieList = new ArrayList<HttpCookie>();
+        List<HttpCookie> cookieList = new ArrayList<>();
         for (String s : strings) {
             try {
                 cookieList.add(((SerializableCookie) fromString(s)).getCookie());
-            } catch (ClassNotFoundException e) {
-                Log.e(TAG, e.getMessage(), e);
-            } catch (IOException e) {
+            } catch (ClassNotFoundException | IOException e) {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
@@ -146,7 +166,7 @@ public class PersistentCookieStore implements CookieStore {
      * @return set of strings representing the URIs
      */
     private Set<String> URIToStringSet(Set<URI> uris) {
-        Set<String> uriStrings = new HashSet<String>();
+        Set<String> uriStrings = new HashSet<>();
         for (URI uri : uris) {
             uriStrings.add(uri.toString());
         }
@@ -158,7 +178,7 @@ public class PersistentCookieStore implements CookieStore {
      * @return set of URIs parsed from strings.
      */
     private Set<URI> StringToURISet(Set<String> strings) {
-        Set<URI> uris = new HashSet<URI>();
+        Set<URI> uris = new HashSet<>();
         for (String s : strings) {
             uris.add(URI.create(s));
         }
@@ -403,7 +423,7 @@ public class PersistentCookieStore implements CookieStore {
                                 cookieJar.remove(ck);
                             }
                         } else {
-                            // the cookie has beed removed from main store,
+                            // the cookie has been removed from main store,
                             // so also remove it from domain indexed store
                             it.remove();
                         }
