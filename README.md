@@ -15,6 +15,8 @@ dependencies {
 }
 ```
 
+####Usage
+
 In your Application class:
 
 ```java
@@ -23,3 +25,5 @@ CookieHandler.setDefault(
         PersistentCookieStore.getInstance(this),
             CookiePolicy.ACCEPT_ORIGINAL_SERVER));
 ```
+
+AndroidCookieJar has been tested with Apache UrlConnection, Volley, and OkHttp.
