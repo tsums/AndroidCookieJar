@@ -10,7 +10,7 @@ Based on [java.net.InMemoryCookieStore](https://github.com/szitnik/SoftwareAnaly
 
 ```gradle
 dependencies {
-    compile 'com.tsums.androidcookiejar:androidcookiejar:1.0@aar'
+    compile 'com.tsums.androidcookiejar:androidcookiejar:1.1@aar'
 }
 ```
 
