@@ -2,6 +2,7 @@ package com.tsums.androidcookiejar;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
@@ -23,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
-
-import biz.source_code.base64Coder.Base64Coder;
 
 /**
  * PersistentCookieStore uses Android SharedPreferences to keep cookies used by your application.
@@ -142,7 +141,7 @@ public class PersistentCookieStore implements CookieStore {
      */
     private static Object fromString(String s) throws IOException,
             ClassNotFoundException {
-        byte[] data = Base64Coder.decode(s);
+        byte[] data = Base64.decode(s, Base64.DEFAULT);
         ObjectInputStream ois = new ObjectInputStream(
                 new ByteArrayInputStream(data));
         Object o = ois.readObject();
@@ -158,7 +157,7 @@ public class PersistentCookieStore implements CookieStore {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(o);
         oos.close();
-        return new String(Base64Coder.encode(baos.toByteArray()));
+        return new String(Base64.encode(baos.toByteArray(), Base64.DEFAULT));
     }
 
     /**

@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-    compile 'biz.source_code:base64coder:2010-09-21'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
