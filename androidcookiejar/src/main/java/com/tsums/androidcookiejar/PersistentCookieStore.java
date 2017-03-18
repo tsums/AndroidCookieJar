@@ -245,7 +245,7 @@ public class PersistentCookieStore implements CookieStore {
             Log.e(TAG, "Failed to Load Cookies from SharedPref", e);
         }
         for (HttpCookie cookie : cookieJar) {
-            Log.e(TAG, cookie.getName() + " : " + cookie.getValue());
+            Log.d(TAG, cookie.getName() + " : " + cookie.getValue());
         }
         lock.unlock();
     }
