@@ -9,19 +9,15 @@ import java.net.HttpCookie;
 public class SerializableCookie implements Serializable {
     private static final long serialVersionUID = 6374381828722046732L;
 
-    private transient final HttpCookie cookie;
-    private transient HttpCookie clientCookie;
+    private transient HttpCookie cookie;
+
 
     public SerializableCookie(HttpCookie cookie) {
         this.cookie = cookie;
     }
 
     public HttpCookie getCookie() {
-        HttpCookie bestCookie = cookie;
-        if (clientCookie != null) {
-            bestCookie = clientCookie;
-        }
-        return bestCookie;
+        return cookie;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -43,17 +39,17 @@ public class SerializableCookie implements Serializable {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         String name = (String) in.readObject();
         String value = (String) in.readObject();
-        clientCookie = new HttpCookie(name, value);
+        cookie = new HttpCookie(name, value);
 
-        clientCookie.setComment((String) in.readObject());
-        clientCookie.setCommentURL((String) in.readObject());
-        clientCookie.setDomain((String) in.readObject());
-        clientCookie.setPath((String) in.readObject());
+        cookie.setComment((String) in.readObject());
+        cookie.setCommentURL((String) in.readObject());
+        cookie.setDomain((String) in.readObject());
+        cookie.setPath((String) in.readObject());
 
-        clientCookie.setMaxAge(in.readLong());
-        clientCookie.setVersion(in.readInt());
+        cookie.setMaxAge(in.readLong());
+        cookie.setVersion(in.readInt());
 
-        clientCookie.setSecure(in.readBoolean());
-        clientCookie.setDiscard(in.readBoolean());
+        cookie.setSecure(in.readBoolean());
+        cookie.setDiscard(in.readBoolean());
     }
 }
